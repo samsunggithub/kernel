@@ -1,0 +1,54 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+
+      - name: Install dependencies
+        run: sudo apt-get install build-essential libncurses-dev libtinfo5 bc bison flex libssl-dev libelf-dev heimdall-flash android-tools-adb android-tools-fastboot curl p7zip-full
+
+      - name: Install mkbootimg
+        run: |
+          wget -q https://android.googlesource.com/platform/system/tools/mkbootimg/+archive/refs/heads/master.tar.gz -O - | tar xzf - mkbootimg.py gki
+          chmod +x mkbootimg.py
+          sudo mv mkbootimg.py /usr/local/bin/mkbootimg
+          sudo mv gki $(python -c 'import site; print(site.getsitepackages()[0])')
+      - name: Install mkdtboimg
+        run: |
+          wget -q https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/master.tar.gz -O - | tar --strip-components 2 -xzf - utils/src/mkdtboimg.py
+          chmod +x mkdtboimg.py
+          sudo mv mkdtboimg.py /usr/local/bin/mkdtboimg
+      - name: Install avbtool
+        run: |
+          wget -q https://android.googlesource.com/platform/external/avb/+archive/refs/heads/master.tar.gz -O - | tar xzf - avbtool.py
+          chmod +x avbtool.py
+          sudo mv avbtool.py /usr/local/bin/avbtool
+
+      - name: Create CruelKernel images
+        run: ./build_kernel.sh
+      - name: Upload Kernel Zip
+        uses: actions/upload-artifact@v2
+        with:
+          name: Kernel
+          path: build/*.img
+          if-no-files-found: error
+      - name: Upload Kernel Images
+        uses: actions/upload-artifact@v2
+        with:
+          name: config
+          path: build.log
+          if-no-files-found: error
+
+      - name: Upload Kernel Info
+        uses: actions/upload-artifact@v2
+        with:
+          name: Image
+          path: arch/arm64/boot/Image
+          if-no-files-found: error
