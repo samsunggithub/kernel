@@ -25,6 +25,7 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/cpu.h>
+#include <linux/clk.h>
 #include <linux/cpumask.h>
 #include <linux/cpufreq.h>
 #include <linux/percpu-defs.h>
