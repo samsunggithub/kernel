@@ -32,6 +32,13 @@ boosted_cpu_util(int cpu);
 static ktime_t ktime_last;
 static __read_mostly bool walt_ktime_suspended;
 
+struct trace_sugov_next_freq {
+	int cpu;
+	int util;
+	int max;
+	int freq;
+};
+
 struct sched_param {
 	int sched_priority;
 };
