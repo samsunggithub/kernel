@@ -32,7 +32,7 @@ jobs:
           sudo mv avbtool.py /usr/local/bin/avbtool
 
       - name: Create images
-        run: ./build.sh
+        run: ./build.sh d2x
       - name: Upload Kernel Zip
         uses: actions/upload-artifact@v2
         with:
