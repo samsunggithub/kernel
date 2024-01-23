@@ -31,8 +31,8 @@ jobs:
           chmod +x avbtool.py
           sudo mv avbtool.py /usr/local/bin/avbtool
 
-      - name: Create CruelKernel images
-        run: ./build_kernel.sh
+      - name: Create images
+        run: ./build.sh
       - name: Upload Kernel Zip
         uses: actions/upload-artifact@v2
         with:
